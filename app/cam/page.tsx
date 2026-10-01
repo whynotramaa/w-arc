@@ -14,10 +14,10 @@ const size = (a: number, zoom?: number) =>
     width: { ideal: Math.round(a >= 1 ? 1920 : 1920 * a) },
     height: { ideal: Math.round(a >= 1 ? 1920 / a : 1920) },
     advanced: zoom === undefined ? [] : [{ zoom }],
-  }) as MediaTrackConstraints;
+  }) as unknown as MediaTrackConstraints;
 
 const openCamera = (facing: string, a: number) =>
-  navigator.mediaDevices.getUserMedia({ video: { facingMode: facing, zoom: true, ...size(a) } as MediaTrackConstraints, audio: true });
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: facing, zoom: true, ...size(a) } as unknown as MediaTrackConstraints, audio: true });
 
 export default function CamPage() {
   const video = useRef<HTMLVideoElement>(null);
