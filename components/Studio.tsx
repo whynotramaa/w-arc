@@ -860,7 +860,7 @@ export default function Studio() {
             />
           )}
         </div>
-        <video ref={videoRef} muted playsInline hidden />
+        <video ref={videoRef} muted playsInline style={{ position: "fixed", width: 2, height: 2, opacity: 0, pointerEvents: "none" }} />
       </main>
 
       <aside className="inspector">
