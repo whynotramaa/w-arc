@@ -76,6 +76,10 @@ const lerpRect = (a: Rect, b: Rect, k: number): Rect => ({ x: lerp(a.x, b.x, k),
 const corners = (r: Rect): P[] => [[r.x, r.y], [r.x + r.w, r.y], [r.x + r.w, r.y + r.h], [r.x, r.y + r.h]];
 const isLine = (e: El) => e.type === "line" || e.type === "arrow";
 const handlesOf = (e: El): P[] => (isLine(e) ? [[e.x, e.y], [e.x + e.w, e.y + e.h]] : corners(norm(e)));
+const preferAv1 = (sdp: string) => {
+  const av1 = [...sdp.matchAll(/a=rtpmap:(\d+) AV1\//g)].map(m => m[1]);
+  return sdp.replace(/^(m=video \S+ \S+) ([^\r\n]+)$/m, (_, head: string, pts: string) => [head, ...av1, ...pts.split(" ").filter(pt => !av1.includes(pt))].join(" "));
+};
 const clock = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 const pct = (r: Rect) => ({ left: `${(r.x / BW) * 100}%`, top: `${(r.y / BH) * 100}%`, width: `${(r.w / BW) * 100}%`, height: `${(r.h / BH) * 100}%` });
 const matches = (q: string) => (a: Item) => !q || `${a.label} ${a.group}`.toLowerCase().includes(q);
@@ -308,7 +312,7 @@ export default function Studio() {
       if (e.type !== "peer-unavailable" && e.type !== "network") fail(e.message);
     });
     p.on("call", call => {
-      call.answer();
+      call.answer(undefined, { sdpTransform: preferAv1 });
       call.on("stream", s => {
         attachStream(s, "phone");
         setPhoneOpen(false);
@@ -860,7 +864,7 @@ export default function Studio() {
             />
           )}
         </div>
-        <video ref={videoRef} muted playsInline style={{ position: "fixed", width: 2, height: 2, opacity: 0, pointerEvents: "none" }} />
+        <video ref={videoRef} muted playsInline hidden />
       </main>
 
       <aside className="inspector">
