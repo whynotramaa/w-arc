@@ -305,7 +305,7 @@ export default function Studio() {
     });
     p.on("disconnected", () => !p.destroyed && p.reconnect());
     p.on("error", e => {
-      if (e.type !== "peer-unavailable") fail(e.message);
+      if (e.type !== "peer-unavailable" && e.type !== "network") fail(e.message);
     });
     p.on("call", call => {
       call.answer();

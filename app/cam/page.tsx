@@ -32,7 +32,9 @@ export default function CamPage() {
           if (pc.connectionState === "failed") setStatus("Couldn't connect. Put both devices on the same Wi-Fi.");
         });
       });
+      peer.on("disconnected", () => !peer!.destroyed && peer!.reconnect());
       peer.on("error", e => {
+        if (e.type === "network") return;
         clearTimeout(slow);
         setStatus(e.type === "peer-unavailable" ? "Studio not found. Click Phone in the studio and scan again." : e.message);
       });
