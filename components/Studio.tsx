@@ -19,8 +19,10 @@ type Tool = "select" | "pen" | "rect" | "diamond" | "ellipse" | "arrow" | "line"
 type Layout = "off" | "bubble" | "pip" | "side" | "overlay";
 type Source = "none" | "webcam" | "phone";
 type Drag =
-  | { kind: "create" | "erase" }
-  | { kind: "move" | "resize"; start: P; orig: El; handle: number };
+  | { kind: "create" }
+  | { kind: "erase" }
+  | { kind: "move"; start: P; orig: El; handle: number }
+  | { kind: "resize"; start: P; orig: El; handle: number };
 type Item = { id: string; label: string; group: string };
 
 const TOOLS: { id: Tool; icon: typeof Square; key: string; label: string }[] = [
